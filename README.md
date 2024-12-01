@@ -1,0 +1,1 @@
+# isletimsistemleri_odev
