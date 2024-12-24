@@ -1,12 +1,28 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
-SRC = src/main.c src/commands.c src/redirection.c src/background.c src/pipe.c
-INC = -Iinclude
+CFLAGS = -Wall -Wextra -g -Iinclude
+LDFLAGS =
 
-all: shell
+SRCDIR = src
+INCDIR = include
+LIBDIR = lib
+BINDIR = bin
 
-shell: $(SRC)
-	$(CC) $(CFLAGS) $(SRC) -o shell $(INC)
+TARGET = $(BINDIR)/mysh
+
+SOURCES = $(wildcard $(SRCDIR)/*.c)
+OBJECTS = $(patsubst $(SRCDIR)/%.c, $(LIBDIR)/%.o, $(SOURCES))
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	@mkdir -p $(BINDIR)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(OBJECTS)
+
+$(LIBDIR)/%.o: $(SRCDIR)/%.c
+	@mkdir -p $(LIBDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f shell
+	rm -rf $(LIBDIR)/*.o $(BINDIR)/mysh
+
+.PHONY: all clean
